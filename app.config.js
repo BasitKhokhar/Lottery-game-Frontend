@@ -28,7 +28,8 @@ export default () => ({
       "expo-secure-store",
       "expo-web-browser",
       "expo-audio",
-      "expo-video"
+      "expo-video",
+       "expo-asset"
     ],
     extra: {
       stripePublishableKey: process.env.STRIPE_PUBLISHABLE_KEY,
