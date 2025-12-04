@@ -43,6 +43,7 @@ import EasypaisaPaymentScreen from "./src/Screens/PaymentScreen/EasyPaisaScreen"
 
 import LogoutScreen from "./src/Screens/UserScreen/LogoutScreen";
 // import StripePayment from "./Components/Cart/StripePayment";
+import { colors } from "./src/Themes/colors";
 import tinycolor from "tinycolor2";
 import 'react-native-gesture-handler';
 import * as SecureStore from 'expo-secure-store';
@@ -156,6 +157,17 @@ const BottomTabs = () => {
     </Tab.Navigator>
   );
 };
+
+export const commonHeaderOptions = {
+  headerStyle: {
+    backgroundColor: colors.background, borderBottomWidth: 1, borderColor: colors.border
+  },
+  headerTintColor: colors.text,
+  headerTitleStyle: {
+    fontWeight: "bold",
+  },
+};
+
 const App = () => {
   const [userId, setUserId] = useState(null);
   const [checkingLogin, setCheckingLogin] = useState(true);
@@ -263,12 +275,12 @@ const App = () => {
               <Stack.Screen name="GameScreen" component={GameScreen} options={{ headerShown: false }} />
               <Stack.Screen name="Tapwingamesscreen" component={HomeScreengamesgrid} options={{ headerShown: false }} />
 
-              <Stack.Screen name="PaymentmethodsScreen" component={PaymentSelectionScreen} options={{ title: "Payment Methods" }} />
-              <Stack.Screen name="jazzcashscreenScreen" component={JazzCashPaymentScreen} options={{ title: "JazzCash" }} />
-              <Stack.Screen name="easypaisaScreen" component={EasypaisaPaymentScreen} options={{ title: "EasyPaisa" }} />
+              <Stack.Screen name="PaymentmethodsScreen" component={PaymentSelectionScreen} options={{ title: "Payment Methods", ...commonHeaderOptions, }}  />
+              <Stack.Screen name="jazzcashscreenScreen" component={JazzCashPaymentScreen} options={{ title: "JazzCash", ...commonHeaderOptions, }}  />
+              <Stack.Screen name="easypaisaScreen" component={EasypaisaPaymentScreen} options={{ title: "EsayPaisa", ...commonHeaderOptions, }}  />
 
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Profile" component={UserScreen} options={{ title: "Profile" }} />
+              <Stack.Screen name="Profile" component={UserScreen} options={{ title: "Profile Details", ...commonHeaderOptions, }}  />
               {/* <Stack.Screen name="UserDetailsScreen" component={UserDetailsScreen} /> */}
               <Stack.Screen name="User" component={UserScreen} />
               <Stack.Screen name="AccountDetail" component={AccountDetailScreen} />
@@ -276,7 +288,7 @@ const App = () => {
               <Stack.Screen name="aboutgame" component={AboutGame} />
                 <Stack.Screen name="aboutus" component={AboutUsScreen} />
               <Stack.Screen name="privacypolicy" component={PrivacyPolicy} />
-              <Stack.Screen name="faq" component={FAQ} />
+              <Stack.Screen name="faq" component={FAQ} options={{ title: "FAQs", ...commonHeaderOptions, }} />
               {/* <Stack.Screen name="StripePayment" component={StripePayment} /> */}
               <Stack.Screen name="Logout" component={LogoutScreen} />
             </Stack.Navigator>
