@@ -29,57 +29,18 @@ const UserScreen = () => {
 
   const fetchUserData = async () => {
     try {
-      // const token = await SecureStore.getItemAsync('jwt_token');
-      // if (!token) {
-      //   console.log("No token found, user might be logged out.");
-      //   return;
-      // }
-
-      // 1️⃣ Fetch Payment Image Button
-      // const Paymentimgresponse = await fetch(`${API_BASE_URL}/content/paymentbtnimage`, {
-      //   headers: {
-      //     "Authorization": `Bearer ${token}`,
-      //     "Content-Type": "application/json",
-      //   },
-      // });
-      // if (!Paymentimgresponse.ok) throw new Error(`HTTP Error: ${Paymentimgresponse.status}`);
-      // const PaymentImagedata = await Paymentimgresponse.json();
-      // setPaymnetImageBtnData(PaymentImagedata);
-      // console.log("Payment Image Data:", PaymentImagedata);
-
+    
       // 2️⃣ Fetch User Data
       const storedUserId = await AsyncStorage.getItem("userId");
       console.log("User ID sednign to backend is:", storedUserId);
       // console.log("token sednign to backend is:", token);
       if (storedUserId) {
         const response = await apiFetch(`/users/${storedUserId}`
-        //   , {
-        //   headers: {
-        //     "Authorization": `Bearer ${token}`,
-        //     "Content-Type": "application/json",
-        //   },
-        // }
       );
         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
         const data = await response.json();
         console.log("reponse from usergetting API", data)
         setUserData(data);
-
-        // 3️⃣ Fetch User Image
-        // const imageResponse = await fetch(`${API_BASE_URL}/users/user_images/${storedUserId}`, {
-        //   headers: {
-        //     "Authorization": `Bearer ${token}`,
-        //     "Content-Type": "application/json",
-        //   },
-        // });
-        // console.log("Image Response Status:", imageResponse.status);
-        // if (imageResponse.ok) {
-        //   const imageData = await imageResponse.json();
-        //   console.log("Fetched user image:", imageData.userImage);
-        //   setUserImage(imageData.userImage);
-        // } else {
-        //   console.log("User image fetch failed.");
-        // }
       }
     } catch (error) {
       console.error("Error fetching user data or image:", error);
