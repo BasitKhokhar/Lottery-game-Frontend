@@ -16,7 +16,7 @@ export default () => ({
       backgroundColor: "#ffffff"
     },
     android: {
-      package: "com.basitkhokhar.sanitaryapp",
+      package: "com.basitkhokhar.bklotteryapp",
       adaptiveIcon: {
         foregroundImage: "./assets/iconimage.png",
       }

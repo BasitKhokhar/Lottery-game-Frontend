@@ -51,9 +51,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { themes } from "../Themes/themes";
 
 const ThemeContext = createContext();
-const STORAGE_THEME = "APP_MAIN_THEME";   // freshMint, redTheme, etc.
-const STORAGE_MODE = "APP_THEME_MODE";    // dark or light
-
+const STORAGE_THEME = "APP_MAIN_THEME";   
+const STORAGE_MODE = "APP_THEME_MODE";   
 export const ThemeProvider = ({ children }) => {
   const [selectedTheme, setSelectedTheme] = useState("freshMint");
   const [isDark, setIsDark] = useState(false);
