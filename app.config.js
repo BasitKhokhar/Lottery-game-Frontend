@@ -5,7 +5,7 @@ export default () => ({
   expo: {
     name: "Lottery",
     slug: "bk-lottery-app",
-    owner: "basitkhokhar4949",
+    owner: "talha3949",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/iconimage.png",
