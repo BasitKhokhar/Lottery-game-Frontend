@@ -1,3 +1,4 @@
+import AppContainer from "./src/AppContainer";
 import { ThemeProvider } from "./src/context/ThemeContext";
 import { useTheme } from "./src/context/ThemeContext";
 import React, { useState, useEffect } from "react";
@@ -10,7 +11,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Icon from "react-native-vector-icons/MaterialIcons";
 
-import { tryRefreshToken } from "./src/apiFetch";
+// import { tryRefreshToken } from "./src/apiFetch";
 // splashscreens //
 import SplashScreen from "./src/SplashScreens/SplashScreen";
 import SplashScreen1 from "./src/SplashScreens/SplashScreen1";
@@ -257,45 +258,48 @@ const App = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider>
-        <StripeProvider
-          publishableKey={stripeKey}
-          merchantDisplayName="Basit Sanitary App"
-        >
-          <NavigationContainer>
-            <Stack.Navigator initialRouteName={userId ? "Main" : "Login"}>
-              <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Login" options={{ headerShown: false }}>
-                {(props) => <LoginScreen {...props} setUserId={setUserId} />}
-              </Stack.Screen>
-              <Stack.Screen name="Main" options={{ headerShown: false }}>
-                {(props) => <BottomTabs {...props} />}
-              </Stack.Screen>
-              <Stack.Screen name="GameScreen" component={GameScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Tapwingamesscreen" component={HomeScreengamesgrid} options={{ headerShown: false }} />
+    <AppContainer backgroundColor="#1A1A1A">
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <ThemeProvider>
+          <StripeProvider
+            publishableKey={stripeKey}
+            merchantDisplayName="Basit Sanitary App"
+          >
+            <NavigationContainer>
+              <Stack.Navigator initialRouteName={userId ? "Main" : "Login"}>
+                <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Login" options={{ headerShown: false }}>
+                  {(props) => <LoginScreen {...props} setUserId={setUserId} />}
+                </Stack.Screen>
+                <Stack.Screen name="Main" options={{ headerShown: false }}>
+                  {(props) => <BottomTabs {...props} />}
+                </Stack.Screen>
+                <Stack.Screen name="GameScreen" component={GameScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Tapwingamesscreen" component={HomeScreengamesgrid} options={{ headerShown: false }} />
 
-              <Stack.Screen name="PaymentmethodsScreen" component={PaymentSelectionScreen} options={{ title: "Payment Methods", ...commonHeaderOptions, }}  />
-              <Stack.Screen name="jazzcashscreenScreen" component={JazzCashPaymentScreen} options={{ title: "JazzCash", ...commonHeaderOptions, }}  />
-              <Stack.Screen name="easypaisaScreen" component={EasypaisaPaymentScreen} options={{ title: "EsayPaisa", ...commonHeaderOptions, }}  />
+                <Stack.Screen name="PaymentmethodsScreen" component={PaymentSelectionScreen} options={{ title: "Payment Methods", ...commonHeaderOptions, }} />
+                <Stack.Screen name="jazzcashscreenScreen" component={JazzCashPaymentScreen} options={{ title: "JazzCash", ...commonHeaderOptions, }} />
+                <Stack.Screen name="easypaisaScreen" component={EasypaisaPaymentScreen} options={{ title: "EsayPaisa", ...commonHeaderOptions, }} />
 
-              <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="Profile" component={UserScreen} options={{ title: "Profile Details", ...commonHeaderOptions, }}  />
-              {/* <Stack.Screen name="UserDetailsScreen" component={UserDetailsScreen} /> */}
-              <Stack.Screen name="User" component={UserScreen} />
-              <Stack.Screen name="AccountDetail" component={AccountDetailScreen} />
-              <Stack.Screen name="CustomerSupport" component={CustomerSupportScreen} />
-              <Stack.Screen name="aboutgame" component={AboutGame} />
+                <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
+                <Stack.Screen name="Profile" component={UserScreen} options={{ title: "Profile Details", ...commonHeaderOptions, }} />
+                {/* <Stack.Screen name="UserDetailsScreen" component={UserDetailsScreen} /> */}
+                <Stack.Screen name="User" component={UserScreen} />
+                <Stack.Screen name="AccountDetail" component={AccountDetailScreen} />
+                <Stack.Screen name="CustomerSupport" component={CustomerSupportScreen} />
+                <Stack.Screen name="aboutgame" component={AboutGame} />
                 <Stack.Screen name="aboutus" component={AboutUsScreen} />
-              <Stack.Screen name="privacypolicy" component={PrivacyPolicy} />
-              <Stack.Screen name="faq" component={FAQ} options={{ title: "FAQs", ...commonHeaderOptions, }} />
-              {/* <Stack.Screen name="StripePayment" component={StripePayment} /> */}
-              <Stack.Screen name="Logout" component={LogoutScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
-        </StripeProvider>
-      </ThemeProvider>
-    </GestureHandlerRootView>
+                <Stack.Screen name="privacypolicy" component={PrivacyPolicy} />
+                <Stack.Screen name="faq" component={FAQ} options={{ title: "FAQs", ...commonHeaderOptions, }} />
+                {/* <Stack.Screen name="StripePayment" component={StripePayment} /> */}
+                <Stack.Screen name="Logout" component={LogoutScreen} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </StripeProvider>
+        </ThemeProvider>
+      </GestureHandlerRootView>
+    </AppContainer>
+
   );
 };
 
@@ -323,7 +327,7 @@ const styles = StyleSheet.create({
   },
   appTitle: {
     fontSize: 24, fontWeight: "bold", color: "white", textShadowColor: "rgba(0,0,0,0.6)",
-    textShadowOffset: { width: 2, height: 2 },letterSpacing:1,
+    textShadowOffset: { width: 2, height: 2 }, letterSpacing: 1,
     textShadowRadius: 4,
   },
   belliconmaincontainer: { paddingRight: 15 },
