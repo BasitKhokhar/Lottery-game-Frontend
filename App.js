@@ -60,7 +60,7 @@ const MainLayout = ({ navigation, children, currentScreen }) => {
   const { theme } = useTheme();
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor:theme.primaryLight}]}>
+      <View style={[styles.header, { backgroundColor: theme.primaryLight }]}>
         <View style={styles.headerItem}>
           <Image source={require("./assets/logo2.png")} style={styles.logo} />
         </View>
@@ -81,7 +81,7 @@ const MainLayout = ({ navigation, children, currentScreen }) => {
 
       <View style={styles.body}>{children}</View>
       <View style={styles.footercontainer}>
-        <View style={[styles.footer, { backgroundColor:theme.primaryLight}]}>
+        <View style={[styles.footer, { backgroundColor: theme.primaryLight }]}>
           {[
             { name: "Home", icon: "home" },
             // { name: "AI Photo", icon: "photo-camera" },
@@ -171,7 +171,7 @@ export const commonHeaderOptions = {
 };
 
 const App = () => {
-const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checkingLogin, setCheckingLogin] = useState(true);
 
   const [isSplash1Visible, setIsSplash1Visible] = useState(true);
@@ -240,67 +240,67 @@ const [isLoggedIn, setIsLoggedIn] = useState(false);
   // -----------------------------
   // 4) RENDER SPLASH / TERMS FLOW
   // -----------------------------
- if (isSplash1Visible)
-  return (
-    <AppContainer backgroundColor="#DC143C">
-      <SplashScreen1 />
-    </AppContainer>
-  );
+  if (isSplash1Visible)
+    return (
+      <AppContainer backgroundColor="#DC143C">
+        <SplashScreen1 />
+      </AppContainer>
+    );
 
-if (isSplash2Visible)
-  return (
-    <AppContainer backgroundColor="#FFF5F5">
-      <SplashScreen2
-        onNext={() => {
-          setIsSplash2Visible(false);
-          setIsSplash3Visible(true);
-        }}
-      />
-    </AppContainer>
-  );
+  if (isSplash2Visible)
+    return (
+      <AppContainer backgroundColor="#FFF5F5">
+        <SplashScreen2
+          onNext={() => {
+            setIsSplash2Visible(false);
+            setIsSplash3Visible(true);
+          }}
+        />
+      </AppContainer>
+    );
 
-if (isSplash3Visible)
-  return (
-    <AppContainer backgroundColor="#FFF5F5">
-      <SplashScreen3
-        onNext={() => {
-          setIsSplash3Visible(false);
-          setIsSplash4Visible(true);
-        }}
-      />
-    </AppContainer>
-  );
+  if (isSplash3Visible)
+    return (
+      <AppContainer backgroundColor="#FFF5F5">
+        <SplashScreen3
+          onNext={() => {
+            setIsSplash3Visible(false);
+            setIsSplash4Visible(true);
+          }}
+        />
+      </AppContainer>
+    );
 
-if (isSplash4Visible)
-  return (
-    <AppContainer backgroundColor="#FFF5F5">
-      <SplashScreen4
-        onNext={() => {
-          setIsSplash4Visible(false);
-          setShowTerms(true);
-        }}
-      />
-    </AppContainer>
-  );
+  if (isSplash4Visible)
+    return (
+      <AppContainer backgroundColor="#FFF5F5">
+        <SplashScreen4
+          onNext={() => {
+            setIsSplash4Visible(false);
+            setShowTerms(true);
+          }}
+        />
+      </AppContainer>
+    );
 
-if (showTerms)
-  return (
-    <AppContainer backgroundColor="#FFF5F5">
-      <TermsScreen
-        onNext={async () => {
-          await AsyncStorage.setItem("termsAccepted", "true");
-          setShowTerms(false);
-        }}
-      />
-    </AppContainer>
-  );
+  if (showTerms)
+    return (
+      <AppContainer backgroundColor="#FFF5F5">
+        <TermsScreen
+          onNext={async () => {
+            await AsyncStorage.setItem("termsAccepted", "true");
+            setShowTerms(false);
+          }}
+        />
+      </AppContainer>
+    );
 
-if (checkingLogin)
-  return (
-    <AppContainer backgroundColor="#1A1A1A">
-      <SplashScreen />
-    </AppContainer>
-  );
+  if (checkingLogin)
+    return (
+      <AppContainer backgroundColor="#1A1A1A">
+        <SplashScreen />
+      </AppContainer>
+    );
 
   // -----------------------------
   // 5) MAIN APP NAVIGATION
@@ -329,7 +329,7 @@ if (checkingLogin)
                 <Stack.Screen name="PaymentmethodsScreen" component={PaymentSelectionScreen} options={{ title: "Payment Methods", ...commonHeaderOptions, }} />
                 <Stack.Screen name="jazzcashscreenScreen" component={JazzCashPaymentScreen} options={{ title: "JazzCash", ...commonHeaderOptions, }} />
                 <Stack.Screen name="easypaisaScreen" component={EasypaisaPaymentScreen} options={{ title: "EsayPaisa", ...commonHeaderOptions, }} />
-<Stack.Screen name="stripePaymentScreen" component={StripePayment} options={{ title: "Card", ...commonHeaderOptions, }} />
+                <Stack.Screen name="stripePaymentScreen" component={StripePayment} options={{ title: "Card", ...commonHeaderOptions, }} />
                 <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Profile" component={UserScreen} options={{ title: "Profile Details", ...commonHeaderOptions, }} />
                 {/* <Stack.Screen name="UserDetailsScreen" component={UserDetailsScreen} /> */}

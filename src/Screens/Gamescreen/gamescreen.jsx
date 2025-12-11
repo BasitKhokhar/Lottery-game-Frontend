@@ -187,6 +187,7 @@ export default function GameScreen({ route }) {
       <BoxGrid
         boxes={game.boxes}
         userChances={userChances}
+         setUserChances={setUserChances} // <-- pass setter
         onBoxClick={handleBoxClick}
         prizeAmount={totalPrize}
         gameType={gameType}

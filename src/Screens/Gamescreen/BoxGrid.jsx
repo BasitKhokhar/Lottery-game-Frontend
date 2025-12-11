@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { apiFetch } from '../../apiFetch';
+import BuyChancesModal from '../PaymentScreen/PaymentMethods';
 import tinycolor from "tinycolor2";
 import { useTheme } from "../../context/ThemeContext";
 
@@ -13,23 +14,13 @@ const API_BASE_URL = Constants.expoConfig.extra.API_BASE_URL;
 export default function BoxGrid({ boxes, userChances, onBoxClick, prizeAmount, gameType, playerCount }) {
   const { theme } = useTheme();
   const navigation = useNavigation();
+const [showModal, setShowModal] = useState(false);
+
   const [prizes, setPrizes] = useState([]);
 
   const fetchPrizesList = async () => {
     try {
-      // const token = await SecureStore.getItemAsync('jwt_token');
-      // if (!token) {
-      //   throw new Error("No token found");
-      // }
-
       const response = await apiFetch(`/gamedata/allprizeslist/${gameType.id}`
-      //   , {
-      //   method: "GET",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //     Authorization: `Bearer ${token}`,
-      //   },
-      // }
     );
 
       if (!response.ok) {
@@ -60,7 +51,7 @@ export default function BoxGrid({ boxes, userChances, onBoxClick, prizeAmount, g
           <View>
             <TouchableOpacity
               style={styles.buyButton}
-              onPress={() => navigation.navigate('PaymentmethodsScreen', { gameTypeId: gameType })}
+              onPress={() => setShowModal(true)}
             >
               <Text style={styles.buyButtonText}>Buy Chances</Text>
             </TouchableOpacity>
@@ -104,6 +95,12 @@ export default function BoxGrid({ boxes, userChances, onBoxClick, prizeAmount, g
           </TouchableOpacity>
         ))}
       </View>
+      {/* Buy Chances Modal */}
+      <BuyChancesModal
+        visible={showModal}
+        onClose={() => setShowModal(false)}
+        gameTypeId={gameType.id}
+      />
     </ScrollView>
   );
 }
