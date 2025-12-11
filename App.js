@@ -41,6 +41,7 @@ import AboutUsScreen from "./src/Screens/UserScreen/AboutUs";
 import PaymentSelectionScreen from "./src/Screens/PaymentScreen/PaymentMethods";
 import JazzCashPaymentScreen from "./src/Screens/PaymentScreen/JazzCashScreen";
 import EasypaisaPaymentScreen from "./src/Screens/PaymentScreen/EasyPaisaScreen";
+import StripePayment from "./src/Screens/PaymentScreen/StripePayment";
 
 import LogoutScreen from "./src/Screens/UserScreen/LogoutScreen";
 // import StripePayment from "./Components/Cart/StripePayment";
@@ -59,7 +60,7 @@ const MainLayout = ({ navigation, children, currentScreen }) => {
   const { theme } = useTheme();
   return (
     <View style={styles.container}>
-      <View style={[styles.header, { backgroundColor: tinycolor(theme.primary).brighten(10).toString() }]}>
+      <View style={[styles.header, { backgroundColor:theme.primaryLight}]}>
         <View style={styles.headerItem}>
           <Image source={require("./assets/logo2.png")} style={styles.logo} />
         </View>
@@ -80,7 +81,7 @@ const MainLayout = ({ navigation, children, currentScreen }) => {
 
       <View style={styles.body}>{children}</View>
       <View style={styles.footercontainer}>
-        <View style={[styles.footer, { backgroundColor: tinycolor(theme.primary).brighten(10).toString() }]}>
+        <View style={[styles.footer, { backgroundColor:theme.primaryLight}]}>
           {[
             { name: "Home", icon: "home" },
             // { name: "AI Photo", icon: "photo-camera" },
@@ -170,38 +171,50 @@ export const commonHeaderOptions = {
 };
 
 const App = () => {
-  const [userId, setUserId] = useState(null);
+const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [checkingLogin, setCheckingLogin] = useState(true);
+
   const [isSplash1Visible, setIsSplash1Visible] = useState(true);
   const [isSplash2Visible, setIsSplash2Visible] = useState(null);
   const [isSplash3Visible, setIsSplash3Visible] = useState(null);
   const [isSplash4Visible, setIsSplash4Visible] = useState(null);
+
   const [showTerms, setShowTerms] = useState(null);
+
+  // -----------------------------
+  // 1) CHECK TERMS ACCEPTED
+  // -----------------------------
   useEffect(() => {
     const checkTerms = async () => {
       const accepted = await AsyncStorage.getItem("termsAccepted");
-      setShowTerms(!accepted); // true if not accepted
+      setShowTerms(!accepted); // show terms if NOT accepted
     };
     checkTerms();
   }, []);
+
+  // -----------------------------
+  // 2) CHECK LOGIN (USING TOKEN)
+  // -----------------------------
   useEffect(() => {
     const checkLogin = async () => {
       try {
         const token = await SecureStore.getItemAsync("refreshToken");
-        console.log("refreshtoken in app.js is", token)
-        const storedUserId = await AsyncStorage.getItem("userId");
-        console.log("userid in app.js is", storedUserId)
-        if (token && storedUserId) {
-          setUserId(storedUserId);
+
+        if (token) {
+          // LOGGED IN → Skip all splashes + terms
+          setIsLoggedIn(true);
+
           setIsSplash2Visible(false);
           setIsSplash3Visible(false);
           setIsSplash4Visible(false);
-          setShowTerms(false)
+          setShowTerms(false);
         } else {
+          // NOT LOGGED IN → Start splash flow
+          setIsLoggedIn(false);
+
           setIsSplash2Visible(true);
           setIsSplash3Visible(false);
           setIsSplash4Visible(false);
-          setShowTerms(false)
         }
       } catch (error) {
         console.error("Error checking login:", error);
@@ -213,74 +226,110 @@ const App = () => {
     checkLogin();
   }, []);
 
+  // -----------------------------
+  // 3) SPLASH 1 → timeout 5 sec
+  // -----------------------------
   useEffect(() => {
     const splashFlow = async () => {
       await new Promise((resolve) => setTimeout(resolve, 5000));
       setIsSplash1Visible(false);
     };
-
     splashFlow();
   }, []);
 
-  if (isSplash1Visible) {
-    return <SplashScreen1 />;
-  }
+  // -----------------------------
+  // 4) RENDER SPLASH / TERMS FLOW
+  // -----------------------------
+ if (isSplash1Visible)
+  return (
+    <AppContainer backgroundColor="#DC143C">
+      <SplashScreen1 />
+    </AppContainer>
+  );
 
-  if (isSplash2Visible) {
-    return <SplashScreen2 onNext={() => {
-      setIsSplash2Visible(false);
-      setIsSplash3Visible(true);
-    }} />;
-  }
-  if (isSplash3Visible) {
-    return <SplashScreen3 onNext={() => {
-      setIsSplash3Visible(false);
-      setIsSplash4Visible(true);
-    }} />;
-  }
-  if (isSplash4Visible) {
-    return <SplashScreen4 onNext={() => {
-      setIsSplash4Visible(false)
-      setShowTerms(true)
-    }} />;
-  }
-  //   if (isSplash4Visible) {
-  //   return <SplashScreen4 onNext={() => setIsSplash4Visible(false)} />;
-  // }
-  if (showTerms) {
-    return <TermsScreen onNext={() => {
-      setShowTerms(false)
-    }} />;
-  }
+if (isSplash2Visible)
+  return (
+    <AppContainer backgroundColor="#FFF5F5">
+      <SplashScreen2
+        onNext={() => {
+          setIsSplash2Visible(false);
+          setIsSplash3Visible(true);
+        }}
+      />
+    </AppContainer>
+  );
 
-  if (checkingLogin) {
-    return <SplashScreen />;
-  }
+if (isSplash3Visible)
+  return (
+    <AppContainer backgroundColor="#FFF5F5">
+      <SplashScreen3
+        onNext={() => {
+          setIsSplash3Visible(false);
+          setIsSplash4Visible(true);
+        }}
+      />
+    </AppContainer>
+  );
 
+if (isSplash4Visible)
+  return (
+    <AppContainer backgroundColor="#FFF5F5">
+      <SplashScreen4
+        onNext={() => {
+          setIsSplash4Visible(false);
+          setShowTerms(true);
+        }}
+      />
+    </AppContainer>
+  );
+
+if (showTerms)
+  return (
+    <AppContainer backgroundColor="#FFF5F5">
+      <TermsScreen
+        onNext={async () => {
+          await AsyncStorage.setItem("termsAccepted", "true");
+          setShowTerms(false);
+        }}
+      />
+    </AppContainer>
+  );
+
+if (checkingLogin)
+  return (
+    <AppContainer backgroundColor="#1A1A1A">
+      <SplashScreen />
+    </AppContainer>
+  );
+
+  // -----------------------------
+  // 5) MAIN APP NAVIGATION
+  // -----------------------------
   return (
     <AppContainer backgroundColor="#1A1A1A">
       <GestureHandlerRootView style={{ flex: 1 }}>
         <ThemeProvider>
-          <StripeProvider
-            publishableKey={stripeKey}
-            merchantDisplayName="Basit Sanitary App"
-          >
+          <StripeProvider publishableKey={stripeKey} merchantDisplayName="Lottery Game App">
             <NavigationContainer>
-              <Stack.Navigator initialRouteName={userId ? "Main" : "Login"}>
+              <Stack.Navigator initialRouteName={isLoggedIn ? "Main" : "Login"}>
                 <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+
                 <Stack.Screen name="Login" options={{ headerShown: false }}>
-                  {(props) => <LoginScreen {...props} setUserId={setUserId} />}
+                  {(props) => <LoginScreen {...props} setIsLoggedIn={setIsLoggedIn} />}
                 </Stack.Screen>
+
                 <Stack.Screen name="Main" options={{ headerShown: false }}>
                   {(props) => <BottomTabs {...props} />}
                 </Stack.Screen>
+
+
                 <Stack.Screen name="GameScreen" component={GameScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Tapwingamesscreen" component={HomeScreengamesgrid} options={{ headerShown: false }} />
 
                 <Stack.Screen name="PaymentmethodsScreen" component={PaymentSelectionScreen} options={{ title: "Payment Methods", ...commonHeaderOptions, }} />
                 <Stack.Screen name="jazzcashscreenScreen" component={JazzCashPaymentScreen} options={{ title: "JazzCash", ...commonHeaderOptions, }} />
                 <Stack.Screen name="easypaisaScreen" component={EasypaisaPaymentScreen} options={{ title: "EsayPaisa", ...commonHeaderOptions, }} />
-
+<Stack.Screen name="stripePaymentScreen" component={StripePayment} options={{ title: "Card", ...commonHeaderOptions, }} />
                 <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Profile" component={UserScreen} options={{ title: "Profile Details", ...commonHeaderOptions, }} />
                 {/* <Stack.Screen name="UserDetailsScreen" component={UserDetailsScreen} /> */}

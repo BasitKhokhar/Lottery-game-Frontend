@@ -72,7 +72,7 @@ const handleLogin = async () => {
       console.log("✅ AccessToken stored:", data.accessToken);
       console.log("✅ RefreshToken stored:", data.refreshToken);
 
-      navigation.replace("SplashScreen"); // or "Main" depending on your flow
+      navigation.replace("Main"); // or "Main" depending on your flow
     } else {
       Alert.alert("Error", data.message || "Invalid credentials");
     }

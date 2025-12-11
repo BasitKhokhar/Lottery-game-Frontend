@@ -54,7 +54,7 @@ const ThemeContext = createContext();
 const STORAGE_THEME = "APP_MAIN_THEME";   
 const STORAGE_MODE = "APP_THEME_MODE";   
 export const ThemeProvider = ({ children }) => {
-  const [selectedTheme, setSelectedTheme] = useState("freshMint");
+  const [selectedTheme, setSelectedTheme] = useState("redTheme");
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {

@@ -1,73 +1,70 @@
-// ========================================
-// 🌈 ALL THEMES IN ONE FILE WITH LIGHT + DARK
-// ========================================
+// ==========================================
+// THEME SYSTEM WITH TINYCOLOR + GRADIENTS
+// ==========================================
+import tinycolor from "tinycolor2";
 
-// 🟩 Fresh Mint Theme
-const freshMint = {
-  light: {
-    bodybackground: "#F8F9FA",
-    cardsbackground: "#FFFFFF",
-    primary: "#00C96D",
-    accent: "#009E5A",
-    text: "#1A1A1A",
-    border: "#D1D1D1",
-    mutedText: "#6C757D",
-    headerbg: "#1A1A1A",
-    formbg: "#FFFFFF",
-    white: "#FFFFFF",
-    error: "#FF3B30",
-  },
-  dark: {
-    bodybackground: "#0d0d0d",
-    cardsbackground: "#1a1a1a",
-    primary: "#00C96D",
-    accent: "#00B36A",
-    text: "#FFFFFF",
-    border: "#444444",
-    mutedText: "#AAAAAA",
-    headerbg: "#000000",
-    formbg: "#111111",
-    white: "#FFFFFF",
-    error: "#FF3B30",
-  },
-};
+// Helper function to generate color variants
+const createColorVariants = (color) => ({
+  base: color,
+  light: tinycolor(color).lighten(10).toString(),
+  dark: tinycolor(color).darken(10).toString(),
+  veryLight: tinycolor(color).lighten(20).toString(),
+  veryDark: tinycolor(color).darken(20).toString(),
+});
 
-// 🌞 Light Red Theme
+// ----------------------------------------------------
+// RED THEME (Light + Dark) — AUTO-GENERATED SHADES
+// ----------------------------------------------------
+const redPrimary = createColorVariants("#DC143C");
+
 const redTheme = {
   light: {
-    primary: "#DC143C",
-    primaryLight: "#FF5C77",
-    background: "#FFF5F5",
+    primary: redPrimary.base,
+    primaryLight: redPrimary.light,
+    primaryDark: redPrimary.dark,
+
+    background: tinycolor("#FFF5F5").lighten(5).toString(),
     card: "#FFFFFF",
+    
+    white:'white',
     textPrimary: "#111111",
     textSecondary: "#444444",
     border: "#E0E0E0",
+
+    gradients: {
+      fire: [redPrimary.veryLight, redPrimary.light,redPrimary.light],
+      crimson: [redPrimary.dark, redPrimary.base],
+      hotPulse: ["#FF6F91", redPrimary.base],
+      redGlow: ["#FFE1E8", redPrimary.light],
+    },
   },
+
   dark: {
-    primary: "#DC143C",
-    primaryDark: "#A50F2E",
+    primary: redPrimary.base,
+    primaryDark: redPrimary.dark,
+    primaryLight: redPrimary.light,
+
     background: "#1A0F0F",
     card: "#2C2C2C",
+
     textPrimary: "#FFFFFF",
     textSecondary: "#BBBBBB",
-    border: "#DC143C",
+    border: redPrimary.base,
+
+    gradients: {
+      fire: [redPrimary.dark, redPrimary.base],
+      crimson: [redPrimary.base, redPrimary.light],
+      hotPulse: ["#802030", redPrimary.dark],
+      redGlow: ["#2A1212", "#3d1d1d"],
+    },
   },
 };
 
-// More themes later...
-const blueNeon = {
-  light: {},
-  dark: {}
-};
 
-const darkOcean = {
-  light: {},
-  dark: {}
-};
-
+// ----------------------------------------------------
+// EXPORT ALL THEMES
+// ----------------------------------------------------
 export const themes = {
-  freshMint,
+  // freshMint,
   redTheme,
-  blueNeon,
-  darkOcean,
 };
