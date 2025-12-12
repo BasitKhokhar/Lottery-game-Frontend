@@ -14,14 +14,14 @@ const API_BASE_URL = Constants.expoConfig.extra.API_BASE_URL;
 export default function BoxGrid({ boxes, userChances, onBoxClick, prizeAmount, gameType, playerCount }) {
   const { theme } = useTheme();
   const navigation = useNavigation();
-const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   const [prizes, setPrizes] = useState([]);
 
   const fetchPrizesList = async () => {
     try {
       const response = await apiFetch(`/gamedata/allprizeslist/${gameType.id}`
-    );
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
@@ -38,8 +38,51 @@ const [showModal, setShowModal] = useState(false);
     fetchPrizesList();
   }, []);
 
+
+  const { initPaymentSheet, presentPaymentSheet } = useStripe();
+
+  const startStripePayment = async (amount, gameTypeId) => {
+    try {
+      const response = await apiFetch(`/payments/create-payment-intent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount, currency: "usd", gameTypeId }),
+      });
+
+      const data = await response.json();
+      if (!data.clientSecret) {
+        alert("Could not initialize payment.");
+        return;
+      }
+
+      const { error: initError } = await initPaymentSheet({
+        paymentIntentClientSecret: data.clientSecret,
+        merchantDisplayName: "Your App",
+      });
+
+      if (initError) {
+        alert(initError.message);
+        return;
+      }
+
+      const { error: presentError } = await presentPaymentSheet();
+
+      if (presentError) {
+        alert("Payment canceled.");
+      } else {
+        alert("Payment successful!");
+        if (onSuccess) onSuccess();
+      }
+    } catch (e) {
+      alert("Payment failed.");
+    }
+  };
+
+
+
+
   return (
-    <ScrollView contentContainerStyle={[styles.container,{backgroundColor: theme.background}]}>
+    <ScrollView contentContainerStyle={[styles.container, { backgroundColor: theme.background }]}>
 
       <View style={styles.gameheadercontainer}>
         {/* Header Section */}
@@ -58,7 +101,7 @@ const [showModal, setShowModal] = useState(false);
           </View>
         </View>
         {/* Prize List Section */}
-        <View style={{display:'flex',flexDirection:'row',justifyContent:'space-between',alignItems:'center',paddingBottom:10}}>
+        <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingBottom: 10 }}>
           <View style={styles.prizesContainer}>
             <Text style={{ fontSize: 16, fontWeight: '600', color: 'white' }}>All Prizes=</Text>
             {[...prizes].reverse().map((prize, index) => (
@@ -100,6 +143,8 @@ const [showModal, setShowModal] = useState(false);
         visible={showModal}
         onClose={() => setShowModal(false)}
         gameTypeId={gameType.id}
+        onSuccess={reloadChances}
+        onStartStripePayment={startStripePayment}
       />
     </ScrollView>
   );
@@ -108,23 +153,23 @@ const [showModal, setShowModal] = useState(false);
 const styles = StyleSheet.create({
   container: {
     paddingBottom: 10,
-    paddingTop:30,
+    paddingTop: 30,
     backgroundColor: '#f7f9fc',
   },
   gameheadercontainer: {
     display: 'flex', flexDirection: 'column',
     backgroundColor: 'black',
     paddingTop: 15,
-    paddingHorizontal:10,
+    paddingHorizontal: 10,
     marginBottom: 15,
-    margin:10,borderRadius:8,    
-    borderWidth:2,
+    margin: 10, borderRadius: 8,
+    borderWidth: 2,
     borderColor: tinycolor('#DC143C').brighten(10).toString()
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-   
+
   },
   buyButton: {
     backgroundColor: tinycolor('#DC143C').brighten(10).toString(),
@@ -164,8 +209,8 @@ const styles = StyleSheet.create({
     backgroundColor: tinycolor('#DC143C').brighten(10).toString(),
     padding: 5,
     borderRadius: 5,
-    borderWidth:2,
-    borderColor:"white",
+    borderWidth: 2,
+    borderColor: "white",
     alignItems: 'center',
   },
   playerCountText: {
@@ -200,7 +245,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 5,
-    paddingBottom:50
+    paddingBottom: 50
   },
   box: {
     width: 35,
