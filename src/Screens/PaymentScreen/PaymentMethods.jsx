@@ -290,7 +290,6 @@ import {
   TouchableOpacity,
   TextInput,
   StyleSheet,
-  ActivityIndicator,
   TouchableWithoutFeedback,
 } from "react-native";
 
@@ -299,45 +298,31 @@ export default function BuyChancesModal({
   onClose,
   gameTypeId,
   onSuccess,
-  onStartStripePayment, // NEW CALLBACK
+  onStartStripePayment,
 }) {
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [amount, setAmount] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const [alertMessage, setAlertMessage] = useState("");
-  const [showAlert, setShowAlert] = useState(false);
-
-  const showCustomAlert = (message) => {
-    setAlertMessage(message);
-    setShowAlert(true);
-  };
-
-  const handleCardPress = () => {
-    if (loading) return;
-
-    // Close modal immediately (fix crash)
-    onClose();
-
-    // Run Stripe payment OUTSIDE modal
-    onStartStripePayment(Number(amount), gameTypeId);
-  };
-
-  const handleClose = () => {
+  const closeAll = () => {
     setShowPaymentMethod(false);
     setAmount("");
-    setAlertMessage("");
-    setShowAlert(false);
     onClose();
+  };
+
+  const handleStripe = () => {
+    closeAll();
+    setTimeout(() => {
+      onStartStripePayment(Number(amount), gameTypeId);
+    }, 400); // prevent android crash
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={visible}>
-      <TouchableWithoutFeedback onPress={handleClose}>
+    <Modal transparent visible={visible} animationType="slide">
+      <TouchableWithoutFeedback onPress={closeAll}>
         <View style={styles.overlay}>
-          <TouchableWithoutFeedback onPress={() => {}}>
-            <View style={styles.modalContainer}>
-              <TouchableOpacity style={styles.closeBtn} onPress={handleClose}>
+          <TouchableWithoutFeedback>
+            <View style={styles.modal}>
+              <TouchableOpacity onPress={closeAll} style={styles.close}>
                 <Text style={{ fontSize: 18 }}>✕</Text>
               </TouchableOpacity>
 
@@ -352,16 +337,18 @@ export default function BuyChancesModal({
                     onChangeText={setAmount}
                   />
                   <TouchableOpacity
-                    style={styles.nextBtn}
+                    style={styles.button}
                     onPress={() => {
                       if (!amount || Number(amount) <= 0) {
-                        showCustomAlert("Enter a valid amount");
+                        alert("Enter valid amount");
                         return;
                       }
                       setShowPaymentMethod(true);
                     }}
                   >
-                    <Text style={styles.nextBtnText}>Choose Payment Method</Text>
+                    <Text style={styles.buttonText}>
+                      Choose Payment Method
+                    </Text>
                   </TouchableOpacity>
                 </>
               )}
@@ -371,39 +358,27 @@ export default function BuyChancesModal({
                   <Text style={styles.title}>Select Payment Method</Text>
 
                   <TouchableOpacity
-                    style={styles.methodBtn}
-                    onPress={handleCardPress}
+                    style={styles.button}
+                    onPress={handleStripe}
                   >
-                    <Text style={styles.methodText}>Pay with Card</Text>
+                    <Text style={styles.buttonText}>Pay with Card</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.methodBtn}>
-                    <Text style={styles.methodText}>JazzCash</Text>
+                  <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>JazzCash</Text>
                   </TouchableOpacity>
 
-                  <TouchableOpacity style={styles.methodBtn}>
-                    <Text style={styles.methodText}>Easypaisa</Text>
+                  <TouchableOpacity style={styles.button}>
+                    <Text style={styles.buttonText}>Easypaisa</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity
-                    style={styles.backBtn}
+                    style={styles.back}
                     onPress={() => setShowPaymentMethod(false)}
                   >
                     <Text style={styles.backText}>← Back</Text>
                   </TouchableOpacity>
                 </>
-              )}
-
-              {showAlert && (
-                <View style={styles.alertContainer}>
-                  <View style={styles.alertBox}>
-                    <Text style={styles.alertText}>{alertMessage}</Text>
-                    <TouchableOpacity
-                      style={styles.alertBtn}
-                      onPress={() => setShowAlert(false)}
-                    />
-                  </View>
-                </View>
               )}
             </View>
           </TouchableWithoutFeedback>
@@ -417,22 +392,15 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
-  modalContainer: {
-    backgroundColor: "#fff",
+  modal: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
     padding: 25,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
-    minHeight: 300,
-    elevation: 10,
   },
-  closeBtn: {
-    position: "absolute",
-    right: 20,
-    top: 15,
-    zIndex: 10,
-  },
+  close: { position: "absolute", right: 20, top: 15 },
   title: {
     fontSize: 20,
     fontWeight: "bold",
@@ -442,77 +410,24 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
-    borderRadius: 12,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    fontSize: 16,
+    borderRadius: 10,
+    padding: 12,
     marginBottom: 20,
   },
-  nextBtn: {
-    backgroundColor: "#DC143C",
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  nextBtnText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
-  },
-  methodBtn: {
+  button: {
     backgroundColor: "#DC143C",
     paddingVertical: 14,
     borderRadius: 12,
     marginVertical: 8,
     alignItems: "center",
   },
-  methodText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  backBtn: {
-    marginTop: 10,
+  buttonText: { color: "white", fontWeight: "bold", fontSize: 16 },
+  back: {
     backgroundColor: "black",
     paddingVertical: 14,
-    borderRadius: 12,
-    marginVertical: 8,
-    alignItems: "center",
-  },
-  backText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  alertContainer: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 20,
-  },
-  alertBox: {
-    backgroundColor: "#fff",
-    padding: 25,
-    borderRadius: 15,
-    width: "80%",
-    alignItems: "center",
-    elevation: 10,
-  },
-  alertText: {
-    fontSize: 16,
-    textAlign: "center",
-    fontWeight: "700",
-    marginBottom: 20,
-  },
-  alertBtn: {
-    backgroundColor: "#DC143C",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
     borderRadius: 10,
+    marginTop: 10,
+    alignItems: "center",
   },
+  backText: { color: "white", fontSize: 14, fontWeight: "600" },
 });
