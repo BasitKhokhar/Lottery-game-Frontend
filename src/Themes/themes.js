@@ -36,6 +36,7 @@ const redTheme = {
       crimson: [redPrimary.dark, redPrimary.base],
       hotPulse: ["#FF6F91", redPrimary.base],
       redGlow: ["#FFE1E8", redPrimary.light],
+      black:[ "#414345","#232526"]
     },
   },
 
@@ -56,6 +57,7 @@ const redTheme = {
       crimson: [redPrimary.base, redPrimary.light],
       hotPulse: ["#802030", redPrimary.dark],
       redGlow: ["#2A1212", "#3d1d1d"],
+       black:[ "#414345","#232526"]
     },
   },
 };

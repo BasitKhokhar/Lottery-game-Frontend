@@ -282,7 +282,7 @@
 //     fontWeight: "bold",
 //   },
 // });
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -299,21 +299,32 @@ export default function BuyChancesModal({
   gameTypeId,
   onSuccess,
   onStartStripePayment,
+  paymentMessage, // received from BoxGrid
 }) {
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [amount, setAmount] = useState("");
 
+  useEffect(() => {
+    if (!visible) {
+      setShowPaymentMethod(false);
+      setAmount("");
+    }
+  }, [visible]);
+
   const closeAll = () => {
     setShowPaymentMethod(false);
     setAmount("");
-    onClose();
+    onClose?.();
   };
 
   const handleStripe = () => {
+    if (!amount || Number(amount) <= 0) {
+      return;
+    }
     closeAll();
     setTimeout(() => {
       onStartStripePayment(Number(amount), gameTypeId);
-    }, 400); // prevent android crash
+    }, 400);
   };
 
   return (
@@ -326,7 +337,13 @@ export default function BuyChancesModal({
                 <Text style={{ fontSize: 18 }}>✕</Text>
               </TouchableOpacity>
 
-              {!showPaymentMethod && (
+              {paymentMessage && (
+                <View style={[styles.messageBox, paymentMessage.type === "error" ? styles.error : styles.success]}>
+                  <Text style={styles.messageText}>{paymentMessage.text}</Text>
+                </View>
+              )}
+
+              {!showPaymentMethod ? (
                 <>
                   <Text style={styles.title}>Enter Amount</Text>
                   <TextInput
@@ -339,28 +356,18 @@ export default function BuyChancesModal({
                   <TouchableOpacity
                     style={styles.button}
                     onPress={() => {
-                      if (!amount || Number(amount) <= 0) {
-                        alert("Enter valid amount");
-                        return;
-                      }
+                      if (!amount || Number(amount) <= 0) return;
                       setShowPaymentMethod(true);
                     }}
                   >
-                    <Text style={styles.buttonText}>
-                      Choose Payment Method
-                    </Text>
+                    <Text style={styles.buttonText}>Choose Payment Method</Text>
                   </TouchableOpacity>
                 </>
-              )}
-
-              {showPaymentMethod && (
+              ) : (
                 <>
                   <Text style={styles.title}>Select Payment Method</Text>
 
-                  <TouchableOpacity
-                    style={styles.button}
-                    onPress={handleStripe}
-                  >
+                  <TouchableOpacity style={styles.button} onPress={handleStripe}>
                     <Text style={styles.buttonText}>Pay with Card</Text>
                   </TouchableOpacity>
 
@@ -389,45 +396,18 @@ export default function BuyChancesModal({
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0,0,0,0.4)",
-  },
-  modal: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 25,
-  },
-  close: { position: "absolute", right: 20, top: 15 },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: "#DC143C",
-    paddingVertical: 14,
-    borderRadius: 12,
-    marginVertical: 8,
-    alignItems: "center",
-  },
+  overlay: { flex: 1, justifyContent: "flex-end", backgroundColor: "rgba(0,0,0,0.4)" },
+  modal: { backgroundColor: "white", borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 25 },
+  close: { position: "absolute", right: 20, top: 15, zIndex: 10 },
+  title: { fontSize: 20, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  input: { borderWidth: 1, borderColor: "#ccc", borderRadius: 10, padding: 12, marginBottom: 20 },
+  button: { backgroundColor: "#DC143C", paddingVertical: 14, borderRadius: 12, marginVertical: 8, alignItems: "center" },
   buttonText: { color: "white", fontWeight: "bold", fontSize: 16 },
-  back: {
-    backgroundColor: "black",
-    paddingVertical: 14,
-    borderRadius: 10,
-    marginTop: 10,
-    alignItems: "center",
-  },
+  back: { backgroundColor: "black", paddingVertical: 14, borderRadius: 10, marginTop: 10, alignItems: "center" },
   backText: { color: "white", fontSize: 14, fontWeight: "600" },
+  messageBox: { padding: 10, borderRadius: 8, marginBottom: 10 },
+  messageText: { color: "white", textAlign: "center", fontWeight: "bold" },
+  error: { backgroundColor: "#FF4C4C" },
+  success: { backgroundColor: "#4CAF50" },
 });
+

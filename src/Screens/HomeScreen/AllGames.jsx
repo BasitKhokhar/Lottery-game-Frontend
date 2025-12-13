@@ -18,7 +18,7 @@ const AllGamesList = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}
      showsVerticalScrollIndicator={false}>
-      <Text style={[styles.gamestitile, { color: theme.textPrimary }]}>All Games</Text>
+      <Text style={[styles.gamestitile, { color: theme.textPrimary }]}>Tap & Win Game</Text>
       <TouchableOpacity
         style={[styles.button,{ borderColor:theme.border}]}
         onPress={() => navigation.navigate('Tapwingamesscreen')}

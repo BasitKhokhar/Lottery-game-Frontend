@@ -84,8 +84,6 @@ const MainLayout = ({ navigation, children, currentScreen }) => {
         <View style={[styles.footer, { backgroundColor: theme.primaryLight }]}>
           {[
             { name: "Home", icon: "home" },
-            // { name: "AI Photo", icon: "photo-camera" },
-            // { name: "AI Video", icon: "video-library" },
             { name: "Profile", icon: "person" },
           ].map(({ name, icon }) => (
             <TouchableOpacity
@@ -98,11 +96,7 @@ const MainLayout = ({ navigation, children, currentScreen }) => {
                 size={24}
                 color={currentScreen === name ? "white" : "black"}
               />
-              {name === "Cart" > 0 && (
-                <View style={styles.cartBadge}>
-                  {/* <Text style={styles.cartCount}></Text> */}
-                </View>
-              )}
+
               <Text
                 style={[
                   styles.footerText,
@@ -135,20 +129,6 @@ const BottomTabs = () => {
           </MainLayout>
         )}
       </Tab.Screen>
-      <Tab.Screen name="AI Photo">
-        {({ navigation }) => (
-          <MainLayout navigation={navigation} currentScreen="AI Photo">
-            <AIPicsFeatureList />
-          </MainLayout>
-        )}
-      </Tab.Screen>
-      <Tab.Screen name="AI Video">
-        {({ navigation }) => (
-          <MainLayout navigation={navigation} currentScreen="AI Video">
-            <Videoscreen />
-          </MainLayout>
-        )}
-      </Tab.Screen>
       <Tab.Screen name="Profile">
         {({ navigation }) => (
           <MainLayout navigation={navigation} currentScreen="Profile">
@@ -162,9 +142,9 @@ const BottomTabs = () => {
 
 export const commonHeaderOptions = {
   headerStyle: {
-    backgroundColor: colors.background, borderBottomWidth: 1, borderColor: colors.border
+    backgroundColor:"#111111", borderBottomWidth: 1, borderColor:"#E0E0E0"
   },
-  headerTintColor: colors.text,
+  headerTintColor:"white",
   headerTitleStyle: {
     fontWeight: "bold",
   },
@@ -324,7 +304,7 @@ const App = () => {
 
 
                 <Stack.Screen name="GameScreen" component={GameScreen} options={{ headerShown: false }} />
-                <Stack.Screen name="Tapwingamesscreen" component={HomeScreengamesgrid} options={{ headerShown: false }} />
+                <Stack.Screen name="Tapwingamesscreen" component={HomeScreengamesgrid} options={{ title: "All Games", ...commonHeaderOptions, }}  />
 
                 <Stack.Screen name="PaymentmethodsScreen" component={PaymentSelectionScreen} options={{ title: "Payment Methods", ...commonHeaderOptions, }} />
                 <Stack.Screen name="jazzcashscreenScreen" component={JazzCashPaymentScreen} options={{ title: "JazzCash", ...commonHeaderOptions, }} />

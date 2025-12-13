@@ -35,12 +35,12 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
     fontWeight: "bold",
-    color:'black'
+    color:'white'
   },
   timeText: {
     fontSize: 16,
     fontWeight: "bold",
-     color:'black'
+     color:'white'
   },
 });
 

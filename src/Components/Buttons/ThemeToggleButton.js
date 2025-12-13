@@ -1,19 +1,77 @@
 
+// import React, { useEffect, useRef } from 'react';
+// import {
+//   TouchableWithoutFeedback,
+//   Animated,
+//   StyleSheet,
+//   View,
+// } from 'react-native';
+// // import { useTheme } from '../context/ThemeContext';
+// import { useTheme } from '../../context/ThemeContext';
+
+// const ThemeToggleButton = () => {
+//   const { isDark, toggleTheme, theme } = useTheme();
+//   const animation = useRef(new Animated.Value(isDark ? 1 : 0)).current;
+
+//   // Animate when theme changes
+//   useEffect(() => {
+//     Animated.timing(animation, {
+//       toValue: isDark ? 1 : 0,
+//       duration: 300,
+//       useNativeDriver: false,
+//     }).start();
+//   }, [isDark]);
+
+//   // Interpolate circle position
+//   const translateX = animation.interpolate({
+//     inputRange: [0, 1],
+//     outputRange: [2, 28], // position for left & right
+//   });
+
+//   // Background color transition
+//   const backgroundColor = animation.interpolate({
+//     inputRange: [0, 1],
+//     outputRange: [theme.border, theme.primary],
+//   });
+
+//   return (
+//     <TouchableWithoutFeedback onPress={toggleTheme}>
+//       <Animated.View style={[styles.container, { backgroundColor }]}>
+//         <Animated.View style={[styles.circle, { transform: [{ translateX }] }]} />
+//       </Animated.View>
+//     </TouchableWithoutFeedback>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     width: 60,
+//     height: 25,
+//     borderRadius: 30,
+//     padding: 2,
+//     justifyContent: 'center',
+//   },
+//   circle: {
+//     width: 24,
+//     height: 24,
+//     borderRadius: 13,
+//     backgroundColor: '#fff',
+//   },
+// });
+
+// export default ThemeToggleButton;
 import React, { useEffect, useRef } from 'react';
 import {
   TouchableWithoutFeedback,
   Animated,
   StyleSheet,
-  View,
 } from 'react-native';
-// import { useTheme } from '../context/ThemeContext';
 import { useTheme } from '../../context/ThemeContext';
 
 const ThemeToggleButton = () => {
-  const { isDark, toggleTheme, theme } = useTheme();
+  const { isDark, toggleThemeMode, theme } = useTheme(); // corrected function name
   const animation = useRef(new Animated.Value(isDark ? 1 : 0)).current;
 
-  // Animate when theme changes
   useEffect(() => {
     Animated.timing(animation, {
       toValue: isDark ? 1 : 0,
@@ -22,22 +80,31 @@ const ThemeToggleButton = () => {
     }).start();
   }, [isDark]);
 
-  // Interpolate circle position
+  const CONTAINER_WIDTH = 60;
+  const CIRCLE_SIZE = 24;
+  const PADDING = 2;
+
   const translateX = animation.interpolate({
     inputRange: [0, 1],
-    outputRange: [2, 28], // position for left & right
+    outputRange: [PADDING, CONTAINER_WIDTH - CIRCLE_SIZE - PADDING],
   });
 
-  // Background color transition
   const backgroundColor = animation.interpolate({
     inputRange: [0, 1],
     outputRange: [theme.border, theme.primary],
   });
 
+  const circleColor = isDark ? theme.primaryLight : '#fff';
+
   return (
-    <TouchableWithoutFeedback onPress={toggleTheme}>
+    <TouchableWithoutFeedback onPress={toggleThemeMode}>
       <Animated.View style={[styles.container, { backgroundColor }]}>
-        <Animated.View style={[styles.circle, { transform: [{ translateX }] }]} />
+        <Animated.View
+          style={[
+            styles.circle,
+            { transform: [{ translateX }], backgroundColor: circleColor },
+          ]}
+        />
       </Animated.View>
     </TouchableWithoutFeedback>
   );
@@ -54,8 +121,7 @@ const styles = StyleSheet.create({
   circle: {
     width: 24,
     height: 24,
-    borderRadius: 13,
-    backgroundColor: '#fff',
+    borderRadius: 12,
   },
 });
 

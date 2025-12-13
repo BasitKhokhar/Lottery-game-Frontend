@@ -1,196 +1,206 @@
-// import React, { useState, useEffect } from "react";
-// import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+// import React, { useState, useEffect,useCallback } from "react";
+// import { View, Text, StyleSheet, TouchableOpacity, Dimensions } from "react-native";
 // import { useNavigation, useFocusEffect } from "@react-navigation/native";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { LinearGradient } from "expo-linear-gradient";
 // import DateTimeDisplay from "./DateTimeDisplay";
 // import Icon from "react-native-vector-icons/MaterialIcons";
-// import { colors } from "../../Themes/colors";
 // import { apiFetch } from "../../apiFetch";
-// import tinycolor from "tinycolor2";
 // import * as SecureStore from 'expo-secure-store';
 // import Constants from 'expo-constants';
+// import { useTheme } from "../../context/ThemeContext";
+
 // const API_BASE_URL = Constants.expoConfig.extra.API_BASE_URL;
+// const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // const UserNameDisplay = () => {
 //   const navigation = useNavigation();
+//   const { theme } = useTheme();
+
 //   const [userName, setUserName] = useState("");
-//   const [userImage, setUserImage] = useState(null);
 //   const [totalPrize, setTotalPrize] = useState(0);
 
 //   const fetchUserName = async () => {
 //     const storedUserId = await AsyncStorage.getItem("userId");
-//     // const token = await SecureStore.getItemAsync("jwt_token");
-
-//     // if (!token) {
-//     //   console.log("No token found, user might be logged out.");
-//     //   return;
-//     // }
 
 //     if (storedUserId) {
 //       try {
-//         const response = await apiFetch(`/users/${storedUserId}`
-//         //   , {
-//         //   headers: {
-//         //     Authorization: `Bearer ${token}`,
-//         //     "Content-Type": "application/json",
-//         //   },
-//         // }
-//       );
-
-//         if (!response.ok) throw new Error(`HTTP Error: ${response.status}`);
-
+//         const response = await apiFetch(`/users/${storedUserId}`);
 //         const data = await response.json();
 //         setUserName(data.name);
 
-//         // Fetch total prize
-//         const prizeResponse = await apiFetch(`/gamedata/total-prize`
-//       );
+//         const prizeResponse = await apiFetch(`/gamedata/total-prize`);
 //         const prizeData = await prizeResponse.json();
 //         setTotalPrize(prizeData.totalPrize || 0);
+
 //       } catch (error) {
 //         console.error("Error fetching user name:", error);
 //       }
 //     }
 //   };
 
-//   // Load when component mounts
-//   useEffect(() => {
-//     fetchUserName();
-//   }, []);
+//   useEffect(() => { fetchUserName(); }, []);
+//   useFocusEffect(React.useCallback(() => { fetchUserName(); }, []));
 
-//   // Reload when screen is focused
-//   useFocusEffect(
-//     React.useCallback(() => {
-//       fetchUserName();
-//     }, [])
-//   );
-
-//   const baseColor = "#DC143C";
-//   const brightColor = tinycolor(baseColor).brighten(10).toString();
-//   const brighterColor = tinycolor(baseColor).brighten(20).toString();
 //   return (
-//     <LinearGradient
-//       colors={[brighterColor, brightColor, brightColor]
-//       }
-//       start={{ x: 1, y: 1 }}
-//       end={{ x: 0, y: 0 }}
-//       style={styles.container}
-//     >
-//       <View style={styles.header}>
-//         <Icon name="waving-hand" size={24} color="#ffffff" style={{
-//           textShadowColor: "rgba(0,0,0,0.6)",
-//           textShadowOffset: { width: 2, height: 2 }, borderTopColor: "rgba(0,0,0,0.3)",
-//           textShadowRadius: 4,
-//         }} />
-//         <Text style={styles.text}>{userName ? `Welcome, ${userName}!` : "Loading..."}</Text>
-//       </View>
-//       <Text style={styles.text1}>Pakistan’s #1 Real-Time Lottery Game!</Text>
-//       {/* Total Prize Section */}
-//       <View style={styles.prizemaincontainer}>
-//         <View style={styles.prizeContainer}>
-//           <Text style={styles.prizeLabel}>💰 </Text>
-//           <Text style={styles.prizeValue}>Rs {totalPrize}</Text>
+//     <View style={[styles.maincontainer,{ height: SCREEN_HEIGHT * .33 }]}>
+//       {/* Lower Container */}
+//      <View style={[styles(theme).lowercontainer, { height: SCREEN_HEIGHT * 0.25 }]}>
+//         <View style={styles(theme).header}>
+//           <Icon
+//             name="waving-hand"
+//             size={24}
+//             color={theme.white}
+//             style={styles(theme).iconShadow}
+//           />
+//           <Text style={styles(theme).text}>
+//             {userName ? `Welcome, ${userName}!` : "Loading..."}
+//           </Text>
 //         </View>
-//         <View style={styles.buyButtoncontainer}>
-//           <TouchableOpacity
-//             style={styles.buyButton}
-//             onPress={() => navigation.navigate('')}
-//           >
-//             <Text style={styles.buyButtonText}>Withdraw</Text>
-//           </TouchableOpacity>
-//         </View>
+//         <Text style={styles(theme).tagline}>
+//           Pakistan’s #1 Real-Time Lottery Game!
+//         </Text>
 //       </View>
 
+//       {/* Upper Floating Container */}
+//       <LinearGradient
+//         colors={theme?.gradients?.black}
+//         start={{ x: 1, y: 1 }}
+//         end={{ x: 0, y: 0 }}
+//         style={[styles(theme).uppercontainer, { top: SCREEN_HEIGHT * 0.16 }]} // overlaps lowercontainer
+//       >
+//         {/* Total Prize */}
+//         <View style={styles(theme).prizemaincontainer}>
+//           <View style={styles(theme).prizeContainer}>
+//             <Text style={styles(theme).prizeLabel}>💰</Text>
+//             <Text style={styles(theme).prizeValue}>Rs {totalPrize}</Text>
+//           </View>
 
-//       <View>
+//           <View style={styles(theme).buyButtoncontainer}>
+//             <TouchableOpacity
+//               style={styles(theme).buyButton}
+//               onPress={() => alert("This option is currently unavailable")}
+//             >
+//               <Text style={styles(theme).buyButtonText}>Withdraw</Text>
+//             </TouchableOpacity>
+//           </View>
+//         </View>
+
 //         <DateTimeDisplay />
-//       </View>
-//     </LinearGradient>
+//       </LinearGradient>
+//     </View>
 //   );
 // };
-// const styles = StyleSheet.create({
-//   container: {
-//     alignItems: "flex-start",
-//     height: 200,
-//     paddingTop: 20,
-//     paddingBottom: 70,
-//     borderBottomLeftRadius: 30,
-//     borderBottomRightRadius: 30,
-//     // Shadow for iOS
-//     shadowColor: "rgba(0,0,0,0.5)",
-//     shadowOffset: { width: 0, height: 8 },
+
+// const styles = (theme) => StyleSheet.create({
+//   maincontainer: {
+//     flex: 1,
+//     backgroundColor: theme.background,
+//   },
+
+//   lowercontainer: {
+//     backgroundColor: theme.primaryLight,
+//     paddingTop:15,
+//     // justifyContent: "flex-end",
+//     // paddingBottom: 60,
+//     borderBottomLeftRadius: 50,
+//     borderBottomRightRadius: 50,
+//     paddingHorizontal: 20,
+//   },
+
+//   uppercontainer: {
+//     position: "absolute",
+//     width: "90%",
+//     alignSelf: "center",
+//     borderRadius: 25,
+//     padding: 20,
+//     shadowColor: "rgba(0,0,0,0.4)",
+//     shadowOffset: { width: 0, height: 6 },
 //     shadowOpacity: 0.3,
-//     shadowRadius: 12,
-//     // Shadow for Android
-//     elevation: 10,
+//     shadowRadius: 10,
+//     elevation: 8,
 //   },
-//   text: {
-//     fontSize: 24, fontWeight: "bold", color: "white", textShadowColor: "rgba(0,0,0,0.6)",
-//     textShadowOffset: { width: 2, height: 2 }, borderTopColor: "rgba(0,0,0,0.3)",
-//     textShadowRadius: 4,
-//   },
-//   text1: {
-//     fontSize: 18, color: 'white', fontWeight: '700', marginLeft: 25, marginTop: 10, paddingTop: 10, borderTopWidth: 1,
-//     borderBottomColor: 'white', borderTopColor: "rgba(0,0,0,0.3)", textShadowColor: "rgba(0,0,0,0.6)",
-//     textShadowOffset: { width: 1, height: 1 },
-//     textShadowRadius: 4,
-//   },
+
 //   header: {
-//     display: "flex",
 //     width: "100%",
 //     flexDirection: "row",
 //     gap: 15,
 //     alignItems: "center",
-//     paddingHorizontal: 25,
-//     // paddingBottom: 10
 //   },
-//   prizemaincontainer: { display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: '93%' },
-//   prizeContainer: {
-//     display: 'flex', flexDirection: 'row', alignItems: 'center',
-//     // marginTop: 15,
-//     marginLeft: 25,
-//     marginVertical: 15
-//   },
-//   prizeLabel: {
-//     fontSize: 24,
-//     color: "white",
-//     fontWeight: "bold",
+
+//   iconShadow: {
 //     textShadowColor: "rgba(0,0,0,0.6)",
-//     textShadowOffset: { width: 1, height: 1 },
+//     textShadowOffset: { width: 2, height: 2 },
 //     textShadowRadius: 4,
 //   },
+
+//   text: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     color: theme.white,
+//     textShadowColor: "rgba(0,0,0,0.6)",
+//     textShadowOffset: { width: 2, height: 2 },
+//     textShadowRadius: 4,
+//   },
+
+//   tagline: {
+//     fontSize: 18,
+//     color: theme.card,
+//     fontWeight: "700",
+//     marginTop: 10,
+//     paddingTop: 10,
+//     borderTopWidth: 1,
+//     borderTopColor: theme.border,
+//   },
+
+//   prizemaincontainer: {
+//     flexDirection: 'row',
+//     justifyContent: 'space-between',
+//     alignItems: "center",
+//     width: '100%',
+//     marginBottom: 10,
+//   },
+
+//   prizeContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//   },
+
+//   prizeLabel: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     color: theme.textPrimary,
+//     marginRight: 5,
+//   },
+
 //   prizeValue: {
 //     fontSize: 28,
 //     fontWeight: "bold",
 //     color: "#FFD700",
-//     textShadowColor: "rgba(0,0,0,0.6)",
-//     textShadowOffset: { width: 1, height: 1 },
-//     textShadowRadius: 4,
 //   },
-//   buyButtoncontainer: { display: 'flex', justifyContent: 'center' },
+
+//   buyButtoncontainer: {
+//     justifyContent: 'center',
+//   },
+
 //   buyButton: {
-//     backgroundColor: tinycolor('black').brighten(10).toString(),
+//     backgroundColor: theme.textPrimary,
 //     paddingVertical: 6,
 //     paddingHorizontal: 12,
 //     borderRadius: 20,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     borderWidth: 2,
-//     borderColor: 'white',
+//     borderWidth: 1,
+//     borderColor: theme.border,
 //   },
+
 //   buyButtonText: {
-//     color: 'white',
-//     fontWeight: 'bold',
+//     color: theme.white,
+//     fontWeight: "bold",
 //     fontSize: 12,
 //   },
-//   // Profile Image Styles
-//   // imageContainer: { width: 50, height: 50, borderRadius: 50, overflow: "hidden" },
-//   // profileImage: { width: "100%", height: "100%", borderRadius: 50, borderWidth: 2, borderColor: "white" },
-//   // defaultProfileCircle: { width: 50, height: 50, borderRadius: 50, borderWidth: 2, borderColor: "white", backgroundColor: "#fff" },
 // });
 
 // export default UserNameDisplay;
+
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
@@ -275,7 +285,7 @@ const UserNameDisplay = () => {
         <View style={styles(theme).buyButtoncontainer}>
           <TouchableOpacity
             style={styles(theme).buyButton}
-            onPress={() => navigation.navigate('')}
+            onPress={() => alert("This option is currently unavailable")}
           >
             <Text style={styles(theme).buyButtonText}>Withdraw</Text>
           </TouchableOpacity>

@@ -61,7 +61,7 @@ const UserScreen = () => {
  const ICON_COLOR = theme.primary; // unified icon color
 
   return (
-    <View style={[styles.maincontainer, { backgroundColor: theme.primary }]}>
+    <View style={[styles.maincontainer, { backgroundColor: theme.primaryLight }]}>
       <ScrollView
         contentContainerStyle={[
           styles.container,
